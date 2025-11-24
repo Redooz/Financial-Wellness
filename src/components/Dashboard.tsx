@@ -3,6 +3,7 @@ import type { StatsResponse, ReportResponse } from '../types';
 import StatsCards from './StatsCards';
 import BudgetChart from './BudgetChart';
 import TransactionList from './TransactionList';
+import { Plus } from 'lucide-react';
 
 interface DashboardProps {
     currentView: 'daily' | 'weekly' | 'monthly';
@@ -11,6 +12,8 @@ interface DashboardProps {
     loading: boolean;
     error: string | null;
 }
+
+const FORM_URL = import.meta.env.VITE_FORM_URL;
 
 const Dashboard: React.FC<DashboardProps> = ({ currentView, stats, report, loading, error }) => {
     if (error) {
@@ -33,6 +36,18 @@ const Dashboard: React.FC<DashboardProps> = ({ currentView, stats, report, loadi
             <section>
                 <h2 className="text-lg font-semibold mb-3 text-gray-200">État du Budget</h2>
                 <StatsCards stats={stats} loading={loading} />
+            </section>
+
+            <section>
+                <a
+                    href={FORM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full p-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold shadow-lg shadow-blue-900/20 transition-all active:scale-[0.98]"
+                >
+                    <Plus size={20} />
+                    <span>Ajouter une transaction</span>
+                </a>
             </section>
 
             {/* Transactions Section */}
