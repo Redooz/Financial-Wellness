@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { StatsResponse, ReportResponse } from '../types';
+import type { StatsResponse, ReportResponse, DeleteResponse } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
@@ -29,6 +29,20 @@ export const fetchReport = async (period: 'daily' | 'weekly' | 'monthly'): Promi
         params: {
             key: API_KEY,
             action: period,
+        },
+    });
+    return response.data;
+};
+
+export const deleteTransaction = async (row: number): Promise<DeleteResponse> => {
+    if (!API_BASE_URL || !API_KEY) {
+        throw new Error('API Configuration Missing');
+    }
+    const response = await api.get('', {
+        params: {
+            key: API_KEY,
+            action: 'delete',
+            row: row,
         },
     });
     return response.data;

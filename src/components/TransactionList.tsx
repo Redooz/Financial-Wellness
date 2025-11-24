@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Pencil, Trash } from 'lucide-react';
 import type { Transaction } from '../types';
 import { cn } from './Layout';
+import { deleteTransaction } from '../services/api';
+import Loader from './Loader';
 
 interface TransactionListProps {
     transactions: Transaction[];
@@ -29,6 +32,25 @@ const formatDate = (dateString: string) => {
 };
 
 const TransactionList: React.FC<TransactionListProps> = ({ transactions, loading }) => {
+    const [deletingRow, setDeletingRow] = useState<number | null>(null);
+
+    const handleDelete = async (row: number) => {
+        setDeletingRow(row);
+        try {
+            const response = await deleteTransaction(row);
+            if (response.success) {
+                const index = transactions.findIndex(t => t.row === row);
+                if (index !== -1) {
+                    transactions.splice(index, 1);
+                }
+            }
+        } catch (error) {
+            console.error('Error deleting transaction:', error);
+        } finally {
+            setDeletingRow(null);
+        }
+    };
+
     if (loading) {
         return (
             <div className="space-y-3 mt-4">
@@ -68,8 +90,31 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, loading
                                 </span>
                             </div>
                         </div>
-                        <div className="font-bold text-white">
-                            {formatCurrency(t.amount)}
+                        <div className="flex items-center gap-3">
+                            <div className="font-bold text-white">
+                                {formatCurrency(t.amount)}
+                            </div>
+                            {t.editUrl && (
+                                <a
+                                    href={t.editUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition-colors"
+                                >
+                                    <Pencil size={16} />
+                                </a>
+                            )}
+                            <button
+                                onClick={() => handleDelete(t.row)}
+                                disabled={deletingRow === t.row}
+                                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {deletingRow === t.row ? (
+                                    <Loader size={16} />
+                                ) : (
+                                    <Trash size={16} />
+                                )}
+                            </button>
                         </div>
                     </div>
                 );

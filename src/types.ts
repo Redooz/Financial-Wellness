@@ -24,10 +24,12 @@ export interface StatsResponse {
 }
 
 export interface Transaction {
+    row: number;
     date: string;
     category: string;
     amount: number;
     description: string;
+    editUrl?: string;
 }
 
 export interface ReportData {
@@ -40,4 +42,10 @@ export interface ReportData {
 export interface ReportResponse {
     period: string;
     data: ReportData;
+}
+
+export interface DeleteResponse {
+    success: boolean;
+    message: string;
+    deletedRow: number;
 }
