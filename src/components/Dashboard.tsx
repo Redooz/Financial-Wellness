@@ -24,6 +24,9 @@ const Dashboard: React.FC<DashboardProps> = ({ currentView, stats, report, loadi
             </div>
         );
     }
+    const { transactions } = report?.data ?? {};
+
+    const orderedTransactions = transactions?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     return (
         <div className="space-y-6 animate-fade-in">
@@ -65,7 +68,7 @@ const Dashboard: React.FC<DashboardProps> = ({ currentView, stats, report, loadi
                     )}
                 </div>
                 <TransactionList
-                    transactions={report?.data.transactions || []}
+                    transactions={orderedTransactions || []}
                     loading={loading}
                 />
             </section>
